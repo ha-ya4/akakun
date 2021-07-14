@@ -28,10 +28,9 @@ func createAccountMenu(w fyne.Window) *fyne.Menu {
 	)
 }
 
-func createMainMenu(w fyne.Window) *fyne.MainMenu {
+func createMainMenu(w fyne.Window, data lib.AkakunDataContainer) *fyne.MainMenu {
 	menu := []*fyne.Menu{
-		createMenu(w),
-		createAccountMenu(w),
+		createMenu(w, data),
 	}
 	return fyne.NewMainMenu(menu...)
 }
