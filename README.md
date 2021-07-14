@@ -1,4 +1,4 @@
 # akakun
 
-bundle.goはサイズが大きい、fyneのcliを使って自動生成できると理由でpushしていない。
+fontに関するbundle.goというファイルが存在するが、bundle.goはサイズが大きい、fyneのcliを使って自動生成できるという理由でpushしていない。
 自動生成の仕方はtheme.goにコメントを残してる。
