@@ -8,6 +8,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/syndtr/goleveldb/leveldb"
 
@@ -26,7 +27,14 @@ func NewGroupView(w fyne.Window, data *lib.AkakunDataContainer) fyne.CanvasObjec
 	form := &widget.Form{
 		Items: formItems,
 		OnSubmit: func() {
-			createNewGroup(name.Text, path.Text, data)
+			if err := createNewGroup(name.Text, path.Text, data, w); err != nil {
+				dialog.ShowError(err, w)
+				return
+			}
+			// 作成に成功したらformに入力された文字を空にする
+			for _, entry := range [...]*widget.Entry{name, path} {
+				entry.SetText("")
+			}
 		},
 	}
 
@@ -35,25 +43,30 @@ func NewGroupView(w fyne.Window, data *lib.AkakunDataContainer) fyne.CanvasObjec
 	)
 }
 
-func createNewGroup(name, path string, data *lib.AkakunDataContainer) {
+func createNewGroup(name, path string, data *lib.AkakunDataContainer, w fyne.Window) error {
 	var err error
 
+	// formの入力チェック
 	if err = validateNewGroupForm(name, path, data); err != nil {
-		fmt.Println(err)
+		return err
 	}
+	// group作成位置の絶対パスを取得
 	abs, err := getNewGroupPathAbs(path, data)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+	// group用のDB作成
+	if err = createNewGroupDB(name, path, data); err != nil {
+		return err
+	}
+	// db作成に成功したらgroupをの情報を登録する
 	if err = data.RegisterGroup(lib.AkakunAccount{Name: name, Path: abs}); err != nil {
-		fmt.Println(err)
+		return err
 	}
 
-	data.DB, err = leveldb.OpenFile(path+name+"_akakun", nil)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer data.DB.Close()
+	info := fmt.Sprintf("%sに%sという名前でグループを作成しました", abs, name)
+	dialog.ShowInformation("成功", info, w)
+	return nil
 }
 
 // group名を指定しているか、すでに同じ名前がないか、pathが指定されているかチェック
@@ -94,4 +107,16 @@ func getNewGroupPathAbs(path string, data *lib.AkakunDataContainer) (string, err
 	}
 
 	return p, nil
+}
+
+func createNewGroupDB(name, path string, data *lib.AkakunDataContainer) error {
+	var err error
+	if data.DB != nil {
+		if err = data.DB.Close(); err != nil {
+			return err
+		}
+	}
+
+	data.DB, err = leveldb.OpenFile(path+name+lib.DBSuffix, nil)
+	return err
 }

@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/syndtr/goleveldb/leveldb"
@@ -32,7 +31,7 @@ func CreateDataContainer() (*AkakunDataContainer, error) {
 			return d, d.SaveGroup()
 		}
 	}
-	fmt.Println(d)
+
 	d.PrjRoot, err = filepath.Abs(".")
 	if err != nil {
 		return d, err
