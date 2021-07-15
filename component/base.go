@@ -7,8 +7,8 @@ import (
 )
 
 func BaseComponent(content fyne.CanvasObject) fyne.CanvasObject {
-	passwordArea := widget.NewEntry()
-	passwordArea.PlaceHolder = "passwaord"
+	passwordArea := widget.NewPasswordEntry()
+	passwordArea.PlaceHolder = "password"
 
 	return container.NewVBox(
 		passwordArea,

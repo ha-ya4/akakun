@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/syndtr/goleveldb/leveldb"
 
@@ -9,8 +10,9 @@ import (
 )
 
 type AkakunDataContainer struct {
-	db    *leveldb.DB
-	Group []AkakunAccount `json:"group"`
+	DB      *leveldb.DB
+	PrjRoot string
+	Group   []AkakunAccount `json:"group"`
 }
 
 type AkakunAccount struct {
@@ -20,23 +22,41 @@ type AkakunAccount struct {
 
 const akakunGroupPath = "./akakun_group.json"
 
-func CreateDataContainer() (AkakunDataContainer, error) {
-	d := AkakunDataContainer{}
+func CreateDataContainer() (*AkakunDataContainer, error) {
+	d := &AkakunDataContainer{}
+
 	err := d.ReadGroupFromFile()
 	// ファイルがなければ作成
 	if err != nil {
 		if err.Error() == "open ./akakun_group.json: no such file or directory" {
-			fmt.Println("ssss")
 			return d, d.SaveGroup()
 		}
 	}
+	fmt.Println(d)
+	d.PrjRoot, err = filepath.Abs(".")
+	if err != nil {
+		return d, err
+	}
+
 	return d, err
 }
 
-func (adc AkakunDataContainer) ReadGroupFromFile() error {
+func (adc AkakunDataContainer) CloseDB() error {
+	if adc.DB == nil {
+		return nil
+	}
+	return adc.DB.Close()
+}
+
+func (adc *AkakunDataContainer) ReadGroupFromFile() error {
 	return hlib.JSONUnmarshalFromFile(akakunGroupPath, &adc.Group)
 }
 
-func (adc AkakunDataContainer) SaveGroup() error {
+func (adc *AkakunDataContainer) SaveGroup() error {
 	return hlib.WriteFileJSONPretty(adc.Group, akakunGroupPath, 0666)
+}
+
+func (adc *AkakunDataContainer) RegisterGroup(account AkakunAccount) error {
+	adc.Group = append(adc.Group, account)
+	return adc.SaveGroup()
 }

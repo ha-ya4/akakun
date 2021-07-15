@@ -30,6 +30,7 @@ func main() {
 	if err != nil {
 		return
 	}
+	defer data.CloseDB()
 
 	menu := createMainMenu(window, data)
 	window.SetMainMenu(menu)
