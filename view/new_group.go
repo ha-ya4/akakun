@@ -75,7 +75,7 @@ func validateNewGroupForm(name, path string, data *lib.AkakunDataContainer) erro
 		return errors.New("group名が指定されていません。")
 	}
 	// groupの情報から同じ名前のgループがすでに存在していないかチェックする
-	for _, g := range data.Group {
+	for _, g := range data.Groups {
 		if g.Name == name {
 			return errors.New("すでに同じ名前のgroup名が存在します")
 		}
@@ -111,12 +111,9 @@ func getNewGroupPathAbs(path string, data *lib.AkakunDataContainer) (string, err
 
 func createNewGroupDB(name, path string, data *lib.AkakunDataContainer) error {
 	var err error
-	if data.DB != nil {
-		if err = data.DB.Close(); err != nil {
-			return err
-		}
+	if err = data.CloseDB(); err != nil {
+		return err
 	}
-
 	data.DB, err = leveldb.OpenFile(path+name+lib.DBSuffix, nil)
 	return err
 }

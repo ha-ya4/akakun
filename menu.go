@@ -13,15 +13,15 @@ func newMenuItem(w fyne.Window, data *lib.AkakunDataContainer) *fyne.MenuItem {
 	})
 }
 
-func openGroupMenuItem(w fyne.Window) *fyne.MenuItem {
+func openGroupMenuItem(w fyne.Window, data *lib.AkakunDataContainer) *fyne.MenuItem {
 	return fyne.NewMenuItem("open", func() {
-		w.SetContent(view.OpenGroupView(w))
+		w.SetContent(view.OpenGroupView(w, data))
 	})
 }
 
 func createMenu(w fyne.Window, data *lib.AkakunDataContainer) *fyne.Menu {
 	new := newMenuItem(w, data)
-	open := openGroupMenuItem(w)
+	open := openGroupMenuItem(w, data)
 
 	return fyne.NewMenu(
 		"menu",
@@ -32,7 +32,7 @@ func createMenu(w fyne.Window, data *lib.AkakunDataContainer) *fyne.Menu {
 
 func groupMenuItem(w fyne.Window) *fyne.MenuItem {
 	return fyne.NewMenuItem("account", func() {
-		w.SetContent(view.GroupView(w))
+		w.SetContent(view.GroupView(w, ""))
 	})
 }
 

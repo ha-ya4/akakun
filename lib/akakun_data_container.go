@@ -11,7 +11,7 @@ import (
 type AkakunDataContainer struct {
 	DB      *leveldb.DB
 	PrjRoot string
-	Group   []AkakunAccount `json:"group"`
+	Groups  []AkakunAccount `json:"groups"`
 }
 
 type AkakunAccount struct {
@@ -48,14 +48,14 @@ func (adc AkakunDataContainer) CloseDB() error {
 }
 
 func (adc *AkakunDataContainer) ReadGroupFromFile() error {
-	return hlib.JSONUnmarshalFromFile(akakunGroupPath, &adc.Group)
+	return hlib.JSONUnmarshalFromFile(akakunGroupPath, &adc.Groups)
 }
 
 func (adc *AkakunDataContainer) SaveGroup() error {
-	return hlib.WriteFileJSONPretty(adc.Group, akakunGroupPath, 0666)
+	return hlib.WriteFileJSONPretty(adc.Groups, akakunGroupPath, 0666)
 }
 
 func (adc *AkakunDataContainer) RegisterGroup(account AkakunAccount) error {
-	adc.Group = append(adc.Group, account)
+	adc.Groups = append(adc.Groups, account)
 	return adc.SaveGroup()
 }

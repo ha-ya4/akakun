@@ -7,6 +7,6 @@ import (
 	"github.com/ha-ya4/akakun/component"
 )
 
-func GroupView(w fyne.Window) fyne.CanvasObject {
-	return component.BaseComponent(widget.NewLabel("group"))
+func GroupView(w fyne.Window, groupName string) fyne.CanvasObject {
+	return component.BaseComponent(widget.NewLabel(groupName))
 }

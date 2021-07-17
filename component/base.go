@@ -6,13 +6,15 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func BaseComponent(content fyne.CanvasObject) fyne.CanvasObject {
+func BaseComponent(content ...fyne.CanvasObject) fyne.CanvasObject {
 	passwordArea := widget.NewPasswordEntry()
 	passwordArea.PlaceHolder = "password"
 
 	return container.NewVBox(
-		passwordArea,
-		widget.NewSeparator(),
-		content,
+		container.NewVBox(
+			passwordArea,
+			widget.NewSeparator(),
+		),
+		container.NewVBox(content...),
 	)
 }
