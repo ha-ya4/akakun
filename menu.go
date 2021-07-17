@@ -36,6 +36,12 @@ func groupMenuItem(w fyne.Window) *fyne.MenuItem {
 	})
 }
 
+func addAccountMenuItem(w fyne.Window, data *lib.AkakunDataContainer) *fyne.MenuItem {
+	return fyne.NewMenuItem("add", func() {
+		w.SetContent(view.AddAccountView(w, data))
+	})
+}
+
 func importGroupMenuItem(w fyne.Window) *fyne.MenuItem {
 	return fyne.NewMenuItem("import", func() {
 		w.SetContent(view.ImportGroupView(w))
@@ -48,14 +54,16 @@ func exportGroupMenuItem(w fyne.Window) *fyne.MenuItem {
 	})
 }
 
-func createGroupMenu(w fyne.Window) *fyne.Menu {
+func createGroupMenu(w fyne.Window, data *lib.AkakunDataContainer) *fyne.Menu {
 	account := groupMenuItem(w)
+	add := addAccountMenuItem(w, data)
 	impt := importGroupMenuItem(w)
 	export := exportGroupMenuItem(w)
 
 	return fyne.NewMenu(
 		"group",
 		account,
+		add,
 		impt,
 		export,
 	)
@@ -64,7 +72,7 @@ func createGroupMenu(w fyne.Window) *fyne.Menu {
 func createMainMenu(w fyne.Window, data *lib.AkakunDataContainer) *fyne.MainMenu {
 	menu := []*fyne.Menu{
 		createMenu(w, data),
-		createGroupMenu(w),
+		createGroupMenu(w, data),
 	}
 	return fyne.NewMainMenu(menu...)
 }

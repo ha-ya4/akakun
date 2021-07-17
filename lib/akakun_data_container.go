@@ -3,13 +3,11 @@ package lib
 import (
 	"path/filepath"
 
-	"github.com/syndtr/goleveldb/leveldb"
-
 	"github.com/ha-ya4/hlib"
 )
 
 type AkakunDataContainer struct {
-	DB      *leveldb.DB
+	DB      DB
 	PrjRoot string
 	Groups  []AkakunAccount `json:"groups"`
 }
@@ -40,8 +38,12 @@ func CreateDataContainer() (*AkakunDataContainer, error) {
 	return d, err
 }
 
+func (adc AkakunDataContainer) IsDBOpen() bool {
+	return adc.DB.DB != nil
+}
+
 func (adc AkakunDataContainer) CloseDB() error {
-	if adc.DB == nil {
+	if !adc.IsDBOpen() {
 		return nil
 	}
 	return adc.DB.Close()

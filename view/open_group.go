@@ -43,7 +43,7 @@ func createOpenGroupButton(g lib.AkakunAccount, data *lib.AkakunDataContainer, w
 			db.Close()
 			return
 		}
-		data.DB = db
+		data.DB.DB = db
 		// 指定されたグループのアカウント一覧へページ偏移する
 		w.SetContent(GroupView(w, g.Name))
 	})

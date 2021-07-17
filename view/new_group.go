@@ -114,6 +114,6 @@ func createNewGroupDB(name, path string, data *lib.AkakunDataContainer) error {
 	if err = data.CloseDB(); err != nil {
 		return err
 	}
-	data.DB, err = leveldb.OpenFile(path+name+lib.DBSuffix, nil)
+	data.DB.DB, err = leveldb.OpenFile(path+name+lib.DBSuffix, nil)
 	return err
 }
